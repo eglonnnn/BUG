@@ -2,7 +2,7 @@
 
 ## Description
 
-A denial-of-service vulnerability in libjpeg-turbo 3.1.0. When processing a crafted malformed JPEG file, the library only prints a warning `Premature end of JPEG file` but does not abort the decoding process. It continues to execute the full decompression pipeline initialization.
+A null pointer dereference vulnerability in libjpeg-turbo 3.1.0. When processing a crafted malformed JPEG file, the library only prints a warning `Premature end of JPEG file` but does not abort the decoding process. It continues to execute the full decompression pipeline initialization.
 
 The malformed image contains a partial DQT table, an SOF0 header with 12-bit precision, and a truncated SOS segment missing its spectral selection parameters (Ss, Se, Ah/Al). As a result, the decoder fails to initialize the `start_input_pass` function pointer, leaving it as NULL. When `jpeg_start_decompress()` is subsequently called, it invokes `start_input_pass` through this null pointer, reading from address 0x000000000000 and causing a segfault.
 
